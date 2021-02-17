@@ -1,7 +1,7 @@
 const errorHandler = (err, req, res, next) => {
-  let status = err.status || 500;
-  let message = err.message || 'Something went wrong';
-
+   err.message = err.message || 'Something went wrong';
+   err.status = err.status || 500;
+  res.status(err.status).render('home', {error: err})
   //TODO: add page to render
 }
 

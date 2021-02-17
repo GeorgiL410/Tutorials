@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { DB_URI } = require('../config/server')
+const { DB_URI } = require('../config/config')
 const dbOptions = {
   useNewUrlParser: true, 
   useUnifiedTopology: true,

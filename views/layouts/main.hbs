@@ -8,6 +8,9 @@
   <title>JS back end skeleton</title>
 </head>
 <body>
+  {{#if error}}
+<div>{{error.message}}</div>
+  {{/if}}
 {{{body}}}
 </body>
 </html>
