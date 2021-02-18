@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const {SECRET} = require('../config/config');
 
 const register = (username, password) => {
   let user = new User({ username, password });
@@ -15,7 +17,8 @@ const login = async (username, password) => {
   if (!isCorrect) {
     throw { message: 'Invalid password', status: 404 };
   }
-  return user;
+let token = jwt.sign({_id: user._id, username: user.username}, SECRET);
+return token;
 };
 
 module.exports = {

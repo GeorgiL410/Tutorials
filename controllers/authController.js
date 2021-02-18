@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const authService = require('../services/authService');
+const {COOKIE_NAME} = require('../config/config');
 // const { body, validationResult } = require('express-validator');
 router.get('/', (req, res) => {
-  res.send('authController');
+  res.render('home');
 });
 
 router.get('/register', (req, res) => {
@@ -12,21 +13,8 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 router.post('/register',
-  // body('repeat-Password')
-  //   .trim()
-  //   .custom((value, { req }) => {
-  //     if (value == req.body.password) {
-  //       return Promise.reject('Passwords do not match!');
-  //     }
-  //   }),
   (req, res, next) => {
-    // const errors = validationResult(req).array();
-    // if (errors.length > 0) {
-    //   let error = errors[0];
-    //   return next(error);
-    // }
     const { username, password, passwordRepeat } = req.body;
-
     authService.register(username, password)
       .then(createdUser => {
         res.redirect('/auth/login');
@@ -35,17 +23,24 @@ router.post('/register',
 
   });
 
-  router.post('/login', (req, res, next) => {
-    const { username, password } = req.body;
-   authService.login(username, password)
-      .then(user => {
-        res.redirect('/');
-      })
-      .catch(err =>{
-        console.log(err);
-        next(err);
-      });
+router.post('/login', (req, res, next) => {
+  const { username, password } = req.body;
+  authService.login(username, password)
+    .then(token => {
+      res.cookie(COOKIE_NAME, token, { httpOnly: true });
+      res.redirect('/');
+    })
+    .catch(err => {
+      console.log(err);
+      next(err);
+    });
 
-  });
+});
+
+router.get('/logout', (req, res) => {
+  res.clearCookie(COOKIE_NAME);
+  res.redirect('/');
+});
+
 
 module.exports = router;
